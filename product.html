@@ -1,26 +1,13 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
+<html lang="en">
 
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Kanit:wght@100&family=Parisienne&family=Playfair+Display&family=Roboto+Condensed:wght@100&family=Roboto:wght@100;400&display=swap" rel="stylesheet">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
+    <title>Your Page Title</title>
+    <meta name="description" content="Your page description">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
-    <!-- Include Twilio and jQuery libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <!-- Include Twilio library -->
-<!-- Include Twilio library from a different CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twilio/3.69.0/twilio.min.js"></script>
-
 </head>
 
 <body>
@@ -33,67 +20,30 @@
         </ul>
     </header>
 
-    <!-- Display welcome message -->
     <div id="welcome-message" style="font-size: 18px; margin-top: 10px;"></div>
+    
+    <div id="div1">
+        <h3 id="welcome">Welcome to the future of Party Invitations</h3>
+        <p> </p>
+    </div>
 
-    <!-- Invitation form -->
-    <form id="invitation-form">
+    <h1 id="beta">Sign Up for the Beta</h1>
+
+    <!-- Add a form for sending SMS invitations -->
+    <form id="invitationForm" onsubmit="sendInvitationSMS(); return false;">
         <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" name="phoneNumber" required>
-        <label for="invitationMessage">Invitation Message:</label>
-        <textarea id="invitationMessage" name="invitationMessage" rows="4"></textarea>
-        <button type="button" onclick="sendInvitation()">Send Invitation</button>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter phone number">
+
+        <label for="message">Invitation Message:</label>
+        <textarea id="message" name="message" rows="4" required placeholder="Enter your invitation message"></textarea>
+
+        <button type="submit" class="beta">Send Invitation</button>
     </form>
 
-    <!-- JavaScript code -->
-    <script src="" async defer></script>
-    <script>
-         // Your Twilio credentials
-         var twilioPhoneNumber = '+18556271276';
-        var accountSid = 'ACccc8e7776a399f5d9a4fedc6046b71b5';
-        var authToken = 'd0decb3f8a97952dcf03b9ad5bb8cca4';
-
-
-
-        // Function to send invitation
-        function sendInvitation() {
-            var phoneNumber = document.getElementById('phoneNumber').value;
-            var message = document.getElementById('invitationMessage').value || "You're invited to the party! Join us for a great time.";
-
-            // Setup Twilio
-            Twilio.Device.setup(accountSid, authToken);
-
-            Twilio.Device.ready(function (device) {
-                // Send SMS using Twilio API
-                $.ajax({
-                    type: 'POST',
-                    url: 'https://api.twilio.com/2010-04-01/Accounts/' + accountSid + '/Messages.json',
-                    data: {
-                        To: phoneNumber,
-                        From: twilioPhoneNumber,
-                        Body: message
-                    },
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", "Basic " + btoa(accountSid + ":" + authToken));
-                    },
-                    success: function (data) {
-                        console.log('Message sent successfully:', data);
-                        displayWelcomeMessage('Invitation sent successfully!');
-                    },
-                    error: function (error) {
-                        console.error('Error sending message:', error);
-                        displayWelcomeMessage('Error sending invitation. Please try again later.');
-                    }
-                });
-            });
-        }
-
-        // Function to display welcome message
-        function displayWelcomeMessage(message) {
-            var welcomeMessage = document.getElementById("welcome-message");
-            welcomeMessage.textContent = message;
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="cinch.js" async defer></script>
 </body>
+
+</html>
 
 </html>

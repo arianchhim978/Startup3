@@ -1,5 +1,3 @@
-// Save this file as login.js
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAlYTcl1C3v6pLVW5Tzm1RcFTHHDQR9Gfw",
@@ -10,6 +8,7 @@ const firebaseConfig = {
     appId: "1:815887812692:web:eb0d7a095b3db0aabf05c1",
     measurementId: "G-3D12K461NF"
 };
+
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -44,6 +43,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
+// Function for user login
 function login() {
     var email = document.getElementById("login-email").value;
     var password = document.getElementById("login-password").value;
@@ -62,6 +62,7 @@ function login() {
         });
 }
 
+// Function for user signup
 function signup() {
     var email = document.getElementById("signup-email").value;
     var password = document.getElementById("signup-password").value;
@@ -80,11 +81,13 @@ function signup() {
         });
 }
 
+// Function to display a welcome message
 function displayWelcomeMessage(email) {
     var welcomeMessage = document.getElementById("welcome-message");
     welcomeMessage.textContent = "Welcome, " + email;
 }
 
+// Function to initialize Google Sign-In
 function initGoogleSignIn() {
     gapi.load('auth2', function () {
         gapi.auth2.init({
@@ -96,4 +99,24 @@ function initGoogleSignIn() {
             });
         });
     });
+}
+
+// Function for user logout
+function logout() {
+    firebase.auth().signOut()
+        .then(() => {
+            // Sign-out successful
+            console.log("Logout successful");
+            clearWelcomeMessage();
+        })
+        .catch((error) => {
+            // An error happened
+            console.error("Logout failed", error);
+        });
+}
+
+// Function to clear the welcome message when logging out
+function clearWelcomeMessage() {
+    var welcomeMessage = document.getElementById("welcome-message");
+    welcomeMessage.textContent = "";
 }
