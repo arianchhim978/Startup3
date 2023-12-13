@@ -81,6 +81,7 @@ header{
     justify-content: center; 
     margin: 50px;
     margin-left:30px;
+    border-radius: 8px;
 } #block1{
     border:solid 10px black;
     display:flex;
