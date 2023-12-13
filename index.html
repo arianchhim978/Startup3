@@ -1,35 +1,109 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
-    <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Kanit:wght@100&family=Parisienne&family=Playfair+Display&family=Roboto+Condensed:wght@100&family=Roboto:wght@100;400&display=swap" rel="stylesheet">
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body><header>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Your Page Title</title>
+    <meta name="description" content="Your page description">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
         <ul>
             <li><a href='index.html'>Home</a></li>
             <li><a href='about.html'>About</a></li>
-            <li><a href='product.html'>Product</a></li> 
-            <li><a href='login.html'>Login/Sign-Up</a></li>
-        </ul></header>  
-        <div id="welcome-message" style="font-size: 18px; margin-top: 10px;"></div>
-        <div id="div1">
-            <h3  id="welcome">Welcome to the future of Party Invitations</h3>
-            <p > </p></div>
-        <h1 id="beta">Sign Up for the Beta</h1>
-        <button class="beta"><a href='login.html'>Sign Up</a></button>
-      
-        <script src="login.js" async defer></script>
+            <li><a href='product.html'>Post</a></li>
+            <li><a href="login.html">Login/SignUp</a></li>
+        </ul>
+    </header> 
 
-    </body>
+    <div id="welcome-message" style="font-size: 18px; margin-top: 10px;"></div>
+
+    <!-- Post List on Index Page -->
+    <div id="box">
+        <div id="postList">
+            <h2>Recent Posts</h2>
+            <div id="posts"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js';
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js';
+
+        // Your Firebase Config
+        var firebaseConfig = {
+            apiKey: "AIzaSyD-dIeLGUH9X9ffcx45R_Dj_1PgAVm2ueg",
+            authDomain: "article-dda14.firebaseapp.com",
+            projectId: "article-dda14",
+            storageBucket: "article-dda14.appspot.com",
+            messagingSenderId: "793518504808",
+            appId: "1:793518504808:web:4c9e597ba0d150200234dd"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Check if a user is logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                displayWelcomeMessage(user.displayName);
+                fetchAndDisplayPosts();
+            }
+        });
+
+        // Display Welcome Message
+        function displayWelcomeMessage(userName) {
+            var welcomeMessage = document.getElementById('welcome-message');
+            welcomeMessage.innerHTML = 'Welcome, ' + userName + '!';
+        }
+
+        // Function to fetch and display posts
+        async function fetchAndDisplayPosts() {
+            const postsContainer = document.getElementById('posts');
+            postsContainer.innerHTML = ''; // Clear existing posts
+
+            // Fetch posts from Firestore
+            const querySnapshot = await getDocs(collection(db, 'posts'));
+            querySnapshot.forEach((doc) => {
+                const post = doc.data();
+
+                // Create a div for each post
+                const postDiv = document.createElement('div');
+                postDiv.textContent = `${post.title}: ${post.content}`;
+
+                // Create a delete button for each post
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => {
+                    deletePost(doc.id);
+                });
+
+                // Append the delete button to the post div
+                postDiv.appendChild(deleteButton);
+
+                // Append the post div to the posts container
+                postsContainer.appendChild(postDiv);
+            });
+        }
+
+        // Function to delete a post from Firestore
+        async function deletePost(postId) {
+            try {
+                await deleteDoc(doc(db, 'posts', postId));
+                console.log('Post deleted successfully');
+                fetchAndDisplayPosts(); // Refresh the displayed posts after deletion
+            } catch (error) {
+                console.error('Error deleting post:', error);
+            }
+        }
+    </script>
+</body>
+
 </html>

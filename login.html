@@ -2,20 +2,12 @@
 <html lang="en">
 
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Kanit:wght@100&family=Parisienne&family=Playfair+Display&family=Roboto+Condensed:wght@100&family=Roboto:wght@100;400&display=swap" rel="stylesheet">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
+    <title>Your Page Title</title>
+    <meta name="description" content="Your page description">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
-    <!-- Include Firebase SDK components -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-compat.js"></script>
-    <script src="login.js" defer></script>
 </head>
 
 <body>
@@ -23,33 +15,114 @@
         <ul>
             <li><a href='index.html'>Home</a></li>
             <li><a href='about.html'>About</a></li>
-            <li><a href='product.html'>Product</a></li>
-            <li><a href='login.html'>Login/Sign-Up</a></li>
+            <li><a href='product.html'>Post</a></li>
+            <li><a href="login.html">Login/SignUp</a></li>
         </ul>
     </header>
 
-    <!-- Display welcome message -->
     <div id="welcome-message" style="font-size: 18px; margin-top: 10px;"></div>
-    <div id="forms">
-        <div id="login-form">
-            <h2>Login</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <!-- Add this button inside the forms div -->
-<button onclick="logout()">Logout</button>
 
-        </div>
+    <!-- Add Firebase SDK without modules -->
+    <!-- Use Firebase CDN links without modules -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
-        <div id="signup-form">
-            <h2>Sign-Up</h2>
-            <input type="email" id="signup-email" placeholder="Email">
-            <input type="password" id="signup-password" placeholder="Password">
-            <button onclick="signup()">Sign-Up</button>
-        </div><br>
-        <!-- Firebase Google Sign-In button -->
-      
+    <button id="loginButton">Log Into Google</button>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+        <h2>Login</h2>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button onclick="signInWithEmailAndPassword()">Login</button>
     </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm">
+        <h2>Sign Up</h2>
+        <label for="signupEmail">Email:</label>
+        <input type="email" id="signupEmail" name="signupEmail" required>
+        <br>
+        <label for="signupPassword">Password:</label>
+        <input type="password" id="signupPassword" name="signupPassword" required>
+        <br>
+        <button onclick="signUpWithEmailAndPassword()">Sign Up</button>
+    </div>
+
+    <script>
+        // Your Firebase Config
+        var firebaseConfig = {
+            apiKey: "AIzaSyD-dIeLGUH9X9ffcx45R_Dj_1PgAVm2ueg",
+            authDomain: "article-dda14.firebaseapp.com",
+            projectId: "article-dda14",
+            storageBucket: "article-dda14.appspot.com",
+            messagingSenderId: "793518504808",
+            appId: "1:793518504808:web:4c9e597ba0d150200234dd"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Google Sign-In Function
+        function signInWithGoogle() {
+            var provider = new firebase.auth.GoogleAuthProvider();
+
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    var user = result.user;
+                    displayWelcomeMessage(user.displayName);
+                })
+                .catch((error) => {
+                    console.error(error.message);
+                });
+        }
+
+        // Display Welcome Message
+        function displayWelcomeMessage(userName) {
+            var welcomeMessage = document.getElementById('welcome-message');
+            welcomeMessage.innerHTML = 'Welcome, ' + userName + '!';
+        }
+
+        // Event listener for the login button
+        var loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.addEventListener('click', signInWithGoogle);
+        }
+
+        // Authentication with Email and Password
+        function signInWithEmailAndPassword() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    var user = userCredential.user;
+                    displayWelcomeMessage(user.email);
+                })
+                .catch((error) => {
+                    console.error(error.message);
+                });
+        }
+
+        function signUpWithEmailAndPassword() {
+            var email = document.getElementById('signupEmail').value;
+            var password = document.getElementById('signupPassword').value;
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    var user = userCredential.user;
+                    displayWelcomeMessage(user.email);
+                })
+                .catch((error) => {
+                    console.error(error.message);
+                });
+        }
+      
+    </script>
 </body>
 
 </html>

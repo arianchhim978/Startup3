@@ -15,35 +15,100 @@
         <ul>
             <li><a href='index.html'>Home</a></li>
             <li><a href='about.html'>About</a></li>
-            <li><a href='product.html'>Product</a></li>
-            <li><a href='login.html'>Login/Sign-Up</a></li>
+            <li><a href='product.html'>Post</a></li>
+            <li><a href="login.html">Login/SignUp</a></li>
         </ul>
     </header>
 
     <div id="welcome-message" style="font-size: 18px; margin-top: 10px;"></div>
-    
-    <div id="div1">
-        <h3 id="welcome">Welcome to the future of Party Invitations</h3>
-        <p> </p>
-    </div>
 
-    <h1 id="beta">Sign Up for the Beta</h1>
+    <!-- Add Firebase SDK with modules -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js';
 
-    <!-- Add a form for sending SMS invitations -->
-    <form id="invitationForm" onsubmit="sendInvitationSMS(); return false;">
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter phone number">
+        // Your Firebase Config
+        var firebaseConfig = {
+            apiKey: "AIzaSyD-dIeLGUH9X9ffcx45R_Dj_1PgAVm2ueg",
+            authDomain: "article-dda14.firebaseapp.com",
+            projectId: "article-dda14",
+            storageBucket: "article-dda14.appspot.com",
+            messagingSenderId: "793518504808",
+            appId: "1:793518504808:web:4c9e597ba0d150200234dd"
+        };
 
-        <label for="message">Invitation Message:</label>
-        <textarea id="message" name="message" rows="4" required placeholder="Enter your invitation message"></textarea>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        <button type="submit" class="beta">Send Invitation</button>
+        // Check if a user is logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                displayWelcomeMessage(user.displayName);
+            }
+        });
+
+        // Display Welcome Message
+        function displayWelcomeMessage(userName) {
+            var welcomeMessage = document.getElementById('welcome-message');
+            welcomeMessage.innerHTML = 'Welcome, ' + userName + '!';
+        }
+
+        // Post Submission Form
+        var postForm = document.getElementById('postForm');
+        if (postForm) {
+            postForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                var postTitle = document.getElementById('postTitle').value;
+                var postContent = document.getElementById('postContent').value;
+
+                // Check if the user is logged in
+                var user = auth.currentUser;
+                if (user) {
+                    // User is logged in, proceed to submit the post
+                    submitPost(user.uid, postTitle, postContent);
+                } else {
+                    console.log('User is not logged in');
+                }
+            });
+        }
+
+        // Function to submit a post to Firestore
+        function submitPost(userId, title, content) {
+            addDoc(collection(db, 'posts'), {
+                userId: userId,
+                title: title,
+                content: content,
+                timestamp: serverTimestamp()
+            })
+                .then((docRef) => {
+                    console.log('Post submitted with ID:', docRef.id);
+                    // Clear the form after submission
+                    postForm.reset();
+                })
+                .catch((error) => {
+                    console.error('Error submitting post:', error);
+                });
+        }
+    </script>
+
+    <!-- Post Submission Form -->
+    <div id="block1">
+    <form id="postForm"> 
+        <h2>Create a Post</h2>
+        <label for="postTitle">Title:</label>
+        <input type="text" id="postTitle" name="postTitle" required>
+        <br>
+        <label for="postContent">Content:</label>
+        <textarea id="postContent" name="postContent" rows="4" required></textarea>
+        <br>
+        <button type="submit">Submit Post</button>
     </form>
-
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="cinch.js" async defer></script>
+</div>
 </body>
 
 </html>
 
-</html>
