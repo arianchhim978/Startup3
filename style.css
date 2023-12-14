@@ -94,9 +94,11 @@ header{
 }#postTitle{
     margin-right:100px; 
     border-radius: 8px;
+    color:black;
 
 }#postContent{
     border-radius: 8px;
     padding-right:100px;
     margin-right:100px;
+    color:black;
 }
